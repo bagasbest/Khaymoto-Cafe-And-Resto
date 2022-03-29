@@ -1,0 +1,74 @@
+import 'package:cafe_and_resto/screens/homepage/product/product_detail_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+
+class ListOfProduct extends StatelessWidget {
+  final List<DocumentSnapshot> document;
+
+  ListOfProduct({required this.document});
+
+  @override
+  Widget build(BuildContext context) {
+    return GridView.count(
+      crossAxisCount: 2,
+      children: List.generate(document.length, (i) {
+        String productId = document[i]['productId'].toString();
+        String name = document[i]['name'].toString();
+        int quantity = document[i]['quantity'];
+        String description = document[i]['description'].toString();
+        String image = document[i]['image'].toString();
+        int price = document[i]['price'];
+        String category = document[i]['category'];
+        return GestureDetector(
+          onTap: () {
+            Route route = MaterialPageRoute(
+                builder: (context) => ProductDetail(
+                  productId: productId,
+                  name: name,
+                  quantity: quantity,
+                  description: description,
+                  price: price,
+                  image: image,
+                  category: category,
+                ));
+            Navigator.push(context, route);
+          },
+          child: Container(
+            padding: EdgeInsets.all(10),
+            margin: EdgeInsets.only(bottom: 16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(15),
+              color: Colors.white,
+            ),
+            child: Stack(
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(15),
+                  child: Image.network(
+                    image,
+                    height: 100,
+                    width: 150,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Container(
+                  margin: EdgeInsets.only(top: 110),
+                  width: MediaQuery.of(context).size.width,
+                  child: Text(
+                    name,
+                    maxLines: 1,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      }),
+    );
+  }
+}
